@@ -1,0 +1,36 @@
+#!/bin/bash
+
+torchrun --nproc_per_node 1 fine-tuning_llms.py \
+ --report_to "wandb" \
+ --model_name_or_path google/flan-t5-xxl \
+ --load_in_8bit \
+ --dataset_name "./client_mi_dataset.py" \
+ --dataset_config_name attitude-full \
+ --task "attitude" \
+ --do_train \
+ --do_eval \
+ --do_predict \
+ --learning_rate 3e-4 \
+ --weight_decay 1e-6 \
+ --num_train_epochs 30 \
+ --max_input_seq_length 256 \
+ --optim 'adafactor' \
+ --cache_dir "./caches" \
+ --output_dir "./models" \
+ --pred_dir './outputs_with_certainty/fine-tuned' \
+ --per_device_train_batch_size 8 \
+ --per_device_eval_batch_size 16 \
+ --ddp_find_unused_parameters=False \
+ --predict_with_generate \
+ --overwrite_output_dir \
+ --evaluation_strategy "epoch" \
+ --save_strategy "epoch" \
+ --load_best_model_at_end \
+ --save_total_limit 1 \
+ --metric_for_best_model "f1" \
+ --use_instruction \
+ --peft_method "lora" \
+ --lora_train_all_layers \
+ --use_therapist_utt \
+ --use_simplified_instruction \
+ --do_early_stopping \
